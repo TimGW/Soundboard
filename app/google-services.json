@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "442516566534",
+    "project_id": "soundboard-bcd9f",
+    "storage_bucket": "soundboard-bcd9f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442516566534:android:de8c97bbc8d711d0d4c987",
+        "android_client_info": {
+          "package_name": "com.mittylabs.soundboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "442516566534-p614dinuc4qnpla14r2lpjvr0g12tbo9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcraxcqTVhcuwbqNJYoyYEBemFLkvn5rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "442516566534-p614dinuc4qnpla14r2lpjvr0g12tbo9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
