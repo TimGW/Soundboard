@@ -1,17 +1,18 @@
 package com.mittylabs.soundboard
 
+import android.media.MediaPlayer
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class MainViewModel : ViewModel() {
+    val sounds = mutableStateListOf<StorageReference>()
     private val storage = FirebaseStorage.getInstance()
-    val sounds = mutableStateListOf<Sound>()
 
     init {
         fetchBoard()
@@ -19,19 +20,15 @@ class MainViewModel : ViewModel() {
 
     private fun fetchBoard() {
         viewModelScope.launch {
-            val listAll = storage.reference.listAll().await()
             sounds.clear()
+            sounds.addAll(storage.reference.listAll().await().items)
+        }
+    }
 
-            listAll.items.forEach {
-                sounds.add(withContext(Dispatchers.IO) {
-                    Sound(
-                        name = it.name
-                            .replace("_", " ")
-                            .replace(".mp3", ""),
-                        uri = it.downloadUrl.await()
-                    )
-                })
-            }
+    fun preparePlayer(player: MediaPlayer, sound: StorageReference) {
+        viewModelScope.launch(Dispatchers.IO) {
+            player.setDataSource(sound.downloadUrl.await().toString())
+            player.prepareAsync()
         }
     }
 }

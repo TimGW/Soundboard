@@ -18,9 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.storage.StorageReference
 import com.mittylabs.soundboard.ColorUtil
 import com.mittylabs.soundboard.MainViewModel
-import com.mittylabs.soundboard.Sound
 import com.mittylabs.soundboard.ui.theme.SoundboardTheme
 import androidx.compose.ui.graphics.Color as ComposeColor
 
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun SoundList(sounds: SnapshotStateList<Sound>) {
+    fun SoundList(sounds: SnapshotStateList<StorageReference>) {
         LazyVerticalGrid(
             cells = GridCells.Adaptive(120.dp),
             contentPadding = PaddingValues(8.dp),
@@ -57,16 +57,15 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun SoundCard(sound: Sound) {
-        val mediaPlayer = MediaPlayer().apply {
+    fun SoundCard(sound: StorageReference, viewModel: MainViewModel = viewModel()) {
+        val player = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build()
             )
-            setDataSource(sound.uri.toString())
-            prepareAsync()
+            viewModel.preparePlayer(this, sound)
         }
 
         Card(
@@ -74,10 +73,12 @@ class MainActivity : ComponentActivity() {
                 .padding(4.dp)
                 .aspectRatio(1f),
             backgroundColor = ComposeColor(ColorUtil.generateRandomColor()),
-            onClick = { mediaPlayer.start() }
+            onClick = { player.start() }
         ) {
             Text(
-                text = sound.name,
+                text = sound.name
+                    .replace("_", " ")
+                    .replace(".mp3", ""),
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
